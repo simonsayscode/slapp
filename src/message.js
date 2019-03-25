@@ -331,7 +331,8 @@ class Message {
       return self
     }
 
-    if (response) {
+    // Block actions don't support responding directly to request.
+    if (response && self.body.type !== 'block_actions') {
       response.send(input)
       callback(null, {})
       return self

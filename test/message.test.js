@@ -712,6 +712,29 @@ test.cb('Message.hasResponse()', t => {
   t.end()
 })
 
+test.cb('Message.respond() to block actions', t => {
+  t.plan(2)
+
+  let msg = new Message()
+  let url = 'http://beepboophq.com'
+  let input = 'beepboop'
+  let res = fixtures.getMockRes()
+  let sendStub = sinon.stub(res, 'send')
+  let reqStub = sinon.stub(msg, '_request', (responseUrl, responseInput, cb) => {
+    cb(null, {}, { ok: true })
+  })
+
+  msg.body.type = 'block_actions'
+
+  msg.attachResponse(res, 100)
+
+  msg.respond(url, input, () => {
+    t.true(reqStub.calledOnce)
+    t.true(sendStub.notCalled)
+    t.end()
+  })
+})
+
 test('Message.isBot() w/ bot_id', t => {
   let msg = new Message('event', {}, {
     bot_id: 'bot_id'
