@@ -336,6 +336,9 @@ class Message {
       response.send(input)
       callback(null, {})
       return self
+    } else if (self.body.type === 'block_actions') {
+      // Sending back empty 200.
+      response.send()
     }
 
     self._queueRequest(() => {

@@ -730,7 +730,7 @@ test.cb('Message.respond() to block actions', t => {
 
   msg.respond(url, input, () => {
     t.true(reqStub.calledOnce)
-    t.true(sendStub.notCalled)
+    t.true(sendStub.calledWith())
     t.end()
   })
 })
