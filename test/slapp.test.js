@@ -1284,6 +1284,44 @@ test.cb('Slapp.dialog() not action, not dialog_submission', t => {
     })
 })
 
+test.cb('Slapp.dialogCancellation()', t => {
+  t.plan(3)
+
+  let app = new Slapp({ context })
+  let message = new Message('action', {
+    type: 'dialog_cancellation',
+    callback_id: '/dialog/12345'
+  }, meta)
+
+  app
+    .dialogCancellation('/dialog/12345', (msg) => {
+      t.deepEqual(msg, message)
+    })
+    ._handle(message, (err, handled) => {
+      t.is(err, null)
+      t.true(handled)
+      t.end()
+    })
+})
+
+test.cb('Slapp.dialogCancellation() no match', t => {
+  t.plan(2)
+
+  let app = new Slapp({ context })
+  let message = new Message('action', {
+    type: 'dialog_cancellation',
+    callback_id: '/xxxx/xxxx'
+  }, meta)
+
+  app
+    .dialogCancellation('/dialog/:id', (msg) => {})
+    ._handle(message, (err, handled) => {
+      t.is(err, null)
+      t.false(handled)
+      t.end()
+    })
+})
+
 test('Slapp default logger', t => {
   let app = new Slapp({ context })
 

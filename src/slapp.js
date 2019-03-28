@@ -1055,6 +1055,65 @@ class Slapp extends EventEmitter {
 
     return this.match(fn)
   }
+
+  /**
+   * Register a new handler for a [dialog cancellation](https://api.slack.com/dialogs).
+   *
+   * The `callbackId` should match the "Callback ID" registered in the dialog cancellation.
+   *
+   *
+   * ##### Parameters
+   * - `callbackId` string
+   * - `callback` function - `(msg, message) => {}` - message
+   *
+   *
+   * ##### Returns
+   * - `this` (chainable)
+   *
+   * Example:
+   *
+   *     // match on callback_id
+   *     slapp.dialogCancellation('launch_message_action', (msg, message) => {}
+   *
+   *
+   * Example dialog cancellation `msg.body` object:
+   *
+   *    {
+   *      "type": "dialog_cancellation",
+   *      "token": "old-and-moldy-verification-token",
+   *      "action_ts": "1542993577.333025",
+   *      "team": {
+   *        "id": "T1ABCD2E12",
+   *        "domain": "coverbands"
+   *      },
+   *      "user": {
+   *         "id": "U2147483697",
+   *        "name": "leepresson"
+   *      },
+   *      "channel": {
+   *        "id": "C1AB2C3DE",
+   *        "name": "graceland"
+   *      },
+   *      "callback_id": "best_elvis_impersonator_name",
+   *      "response_url": "https://hooks.slack.com/app/T1ABCD2E12/486xxxxxx/jbF9HF",
+   *      "state": "final_round"
+   *    }
+   *
+   *
+   * @param {string} callbackId
+   * @param {function} callback
+   */
+
+  dialogCancellation (callbackId, callback) {
+    let fn = (msg) => {
+      if (msg.type !== 'action' || msg.body.type !== 'dialog_cancellation') return
+      if (msg.body.callback_id !== callbackId) return
+      callback(msg)
+      return true
+    }
+
+    return this.match(fn)
+  }
 }
 
 module.exports = Slapp
