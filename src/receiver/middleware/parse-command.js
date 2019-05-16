@@ -18,7 +18,8 @@ module.exports = () => {
           timestamp: (req.headers || {})['x-slack-request-timestamp'],
           user_id: body.user_id,
           channel_id: body.channel_id,
-          team_id: body.team_id
+          team_id: body.team_id,
+          enterprise_id: body.enterprise_id
         },
         // Slash Commands requests may be responded to directly within 3000ms
         response: res,

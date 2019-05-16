@@ -55,6 +55,31 @@ test.cb('ParseEvent() with payload', t => {
   })
 })
 
+test.cb('ParseEvent() with enterprise payload', t => {
+  let mw = ParseEvent().pop()
+  let payload = mockEnterprisePayload()
+  let req = {
+    body: payload,
+    headers: fixtures.getMockSlackHeaders(SIGNATURE, TIMESTAMP)
+  }
+
+  mw(req, {}, () => {
+    let slapp = req.slapp
+
+    t.is(slapp.type, 'event')
+    t.deepEqual(slapp.body, req.body)
+    t.is(slapp.meta.verify_token, payload.token)
+    t.is(slapp.meta.user_id, payload.event.user)
+    t.is(slapp.meta.bot_id, payload.event.bot_id)
+    t.is(slapp.meta.channel_id, payload.event.channel)
+    t.is(slapp.meta.team_id, payload.team_id)
+    t.is(slapp.meta.enterprise_id, payload.enterprise_id)
+    t.is(slapp.meta.signature, SIGNATURE)
+    t.is(slapp.meta.timestamp, TIMESTAMP)
+    t.end()
+  })
+})
+
 test.cb('ParseEvent() with user change payload', t => {
   let mw = ParseEvent().pop()
   let payload = mockUserChangePayload()
@@ -122,6 +147,19 @@ function mockPayload () {
       channel: 'channel_id'
     },
     team_id: 'team_id'
+  }
+}
+
+function mockEnterprisePayload () {
+  return {
+    token: 'token',
+    event: {
+      user: 'user_id',
+      bot_id: 'bot_id',
+      channel: 'channel_id'
+    },
+    team_id: 'team_id',
+    enterprise_id: 'enterprise_id'
   }
 }
 

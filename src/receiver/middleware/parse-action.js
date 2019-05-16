@@ -35,7 +35,8 @@ module.exports = () => {
           timestamp: (req.headers || {})['x-slack-request-timestamp'],
           user_id: body.user.id,
           channel_id: body.channel.id,
-          team_id: body.team.id
+          team_id: body.team.id,
+          enterprise_id: body.team.enterprise_id
         }
       }
 

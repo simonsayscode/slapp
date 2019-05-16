@@ -38,7 +38,8 @@ module.exports = () => {
           user_id: userId,
           bot_id: event.bot_id,
           channel_id: channelId,
-          team_id: body.team_id
+          team_id: body.team_id,
+          enterprise_id: body.enterprise_id
         }
       }
 

@@ -62,6 +62,36 @@ test.cb('ParseAction() valid payload', t => {
   })
 })
 
+test.cb('ParseAction() valid enterprise payload', t => {
+  t.plan(11)
+  let mw = ParseAction().pop()
+
+  let payload = mockEnterprisePayload()
+  let req = {
+    body: { payload: JSON.stringify(payload) },
+    headers: fixtures.getMockSlackHeaders(SIGNATURE, TIMESTAMP)
+  }
+  let res = fixtures.getMockRes()
+
+  mw(req, res, () => {
+    let slapp = req.slapp
+
+    t.is(slapp.type, 'action')
+    t.deepEqual(slapp.body, payload)
+    t.is(slapp.meta.verify_token, payload.token)
+    t.is(slapp.meta.user_id, payload.user.id)
+    t.is(slapp.meta.channel_id, payload.channel.id)
+    t.is(slapp.meta.team_id, payload.team.id)
+    t.is(slapp.meta.enterprise_id, payload.team.enterprise_id)
+    t.is(slapp.meta.signature, SIGNATURE)
+    t.is(slapp.meta.timestamp, TIMESTAMP)
+    t.is(slapp.response, res)
+    t.is(slapp.responseTimeout, 2500)
+
+    t.end()
+  })
+})
+
 test.cb('ParseAction() message_action valid payload', t => {
   t.plan(3)
   let mw = ParseAction().pop()
@@ -117,6 +147,22 @@ function mockPayload () {
     },
     team: {
       id: 'team_id'
+    }
+  }
+}
+
+function mockEnterprisePayload () {
+  return {
+    token: 'token',
+    user: {
+      id: 'user_id'
+    },
+    channel: {
+      id: 'channel_id'
+    },
+    team: {
+      id: 'team_id',
+      enterprise_id: 'enterprise_id'
     }
   }
 }

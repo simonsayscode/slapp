@@ -61,6 +61,34 @@ test.cb('ParseOptions() with payload', t => {
   })
 })
 
+test.cb('ParseOptions() with enterprise payload', t => {
+  let mw = ParseOptions().pop()
+  let payload = mockEnterprisePayload()
+  let req = {
+    body: { payload: JSON.stringify(payload) },
+    headers: fixtures.getMockSlackHeaders(SIGNATURE, TIMESTAMP)
+  }
+  let res = fixtures.getMockRes()
+
+  mw(req, res, (err) => {
+    t.ifError(err)
+    let slapp = req.slapp
+
+    t.is(slapp.type, 'options')
+    t.deepEqual(slapp.body, payload)
+    t.is(slapp.meta.verify_token, payload.token)
+    t.is(slapp.meta.user_id, payload.user.id)
+    t.is(slapp.meta.channel_id, payload.channel.id)
+    t.is(slapp.meta.team_id, payload.team.id)
+    t.is(slapp.meta.enterprise_id, payload.team.enterprise_id)
+    t.is(slapp.meta.signature, SIGNATURE)
+    t.is(slapp.meta.timestamp, TIMESTAMP)
+    t.is(slapp.response, res)
+    t.is(slapp.responseTimeout, 3000)
+    t.end()
+  })
+})
+
 function mockPayload () {
   return {
     name: 'name',
@@ -69,6 +97,31 @@ function mockPayload () {
     team: {
       id: 'team_id',
       domain: 'team_domain'
+    },
+    channel: {
+      id: 'channel_id',
+      name: 'channel_name'
+    },
+    user: {
+      id: 'user_id',
+      name: 'user_name'
+    },
+    action_ts: 'action_ts',
+    message_ts: 'message_ts',
+    attachment_id: '1',
+    token: 'token'
+  }
+}
+
+function mockEnterprisePayload () {
+  return {
+    name: 'name',
+    value: '',
+    callback_id: 'callback_id',
+    team: {
+      id: 'team_id',
+      domain: 'team_domain',
+      enterprise_id: 'enterprise_id'
     },
     channel: {
       id: 'channel_id',

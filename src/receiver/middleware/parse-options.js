@@ -28,7 +28,8 @@ module.exports = () => {
           timestamp: (req.headers || {})['x-slack-request-timestamp'],
           user_id: body.user && body.user.id,
           channel_id: body.channel && body.channel.id,
-          team_id: body.team && body.team.id
+          team_id: body.team && body.team.id,
+          enterprise_id: body.team && body.team.enterprise_id
         },
         // Options must be handled very quickly within ???
         response: res,
