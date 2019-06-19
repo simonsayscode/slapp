@@ -31,13 +31,13 @@
     "node": ">=6.0.0"
   },
   "dependencies": {
-    "body-parser": "^1.15.2",
+    "body-parser": "^1.19.0",
     "chalk": "^1.1.3",
     "deap": "^1.0.0",
     "js-queue": "^1.0.0",
     "path-to-regexp": "^2.0.0",
     "request": "^2.73.0",
-    "slack": "git+https://github.com/slambdev/slack"
+    "slack": "11.0.2"
   },
   "devDependencies": {
     "ava": "^0.15.2",
